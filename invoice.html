@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NomadGears Rental Invoice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --theme: #F5F5DC; /* Beige */
+      --theme-light: #faf9f5;
+      --theme-dark: #d6d5c4;
+    }
+    body {
+      background: var(--theme-light);
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      color: #000; /* All text black */
+    }
+    .invoice-box {
+      max-width: 820px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 36px 32px 28px 32px;
+      border-radius: 16px;
+      box-shadow: 0 6px 32px rgba(214, 213, 196, 0.6);
+      color: #000;
+    }
+    .invoice-header-bar {
+      background: var(--theme);
+      color: #000;
+      padding: 18px 0 14px 0;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 200px;
+    }
+    .header-left img {
+      width: 200px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      margin-bottom: 0;
+      border-radius: 10px;
+      background: #fff;
+      border: none;
+      box-shadow: none;
+      display: block;
+    }
+    .address-block {
+      margin-top: 0;
+      margin-bottom: 2px;
+      font-size: 15px;
+      color: #000;
+      word-break: break-word;
+      letter-spacing: 0.5px;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: bold;
+      line-height: 1.13;
+    }
+    .address-block .rental {
+      font-weight: normal;
+      font-size: 15px;
+      color: #000;
+      letter-spacing: 0.5px;
+      font-family: 'Roboto', Arial, sans-serif;
+      display: block;
+      margin: 0;
+      padding: 0;
+      line-height: 1.13;
+    }
+    .header-left .pincode,
+    .header-left .phone {
+      font-size: 15px;
+      margin-bottom: 2px;
+      color: #000;
+      word-break: break-word;
+      letter-spacing: 0.5px;
+      font-family: 'Roboto', Arial, sans-serif;
+      font-weight: bold;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-top: 10px;
+      color: #000;
+    }
+    .details-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      color: #000;
+    }
+    .details-row .label {
+      color: #000;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    .details-row .value {
+      font-weight: 500;
+      color: #000;
+      font-size: 1.08rem;
+    }
+    .customer-details {
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      align-items: center;
+      color: #000;
+    }
+    .customer-details label {
+      font-weight: bold;
+      margin-right: 6px;
+      color: #000;
+    }
+    .customer-details input {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: 1px solid #d0d7de;
+      outline: none;
+      background: #f9f9f9;
+      margin-right: 10px;
+      min-width: 120px;
+      color: #000;
+    }
+    .customer-info-display {
+      margin-bottom: 12px;
+      color: #000;
+      background: #faf9f5;
+      border-radius: 7px;
+      padding: 6px 14px 6px 14px;
+      font-size: 1.05rem;
+      font-weight: normal;
+      line-height: 1;
+      white-space: pre-line;
+    }
+    .customer-info-display > div {
+      margin-bottom: 0;
+      font-weight: normal;
+      color: #000;
+    }
+    .actions {
+      margin: 18px 0 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: #000;
+    }
+    .actions select, .actions input, .actions button {
+      font-family: inherit;
+      font-size: 1rem;
+      padding: 8px 10px;
+      border-radius: 5px;
+      border: 1px solid #d0d7de;
+      outline: none;
+      background: #f9f9f9;
+      transition: border-color 0.2s;
+      color: #000;
+    }
+    .actions button {
+      background: var(--theme);
+      color: #000;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .actions button:hover {
+      background: var(--theme-dark);
+      color: #000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 32px;
+      font-size: 16px;
+      background: #faf9f5;
+      border-radius: 8px;
+      overflow: hidden;
+      color: #000;
+    }
+    th, td {
+      border: 1px solid #d6d5c4;
+      padding: 13px 10px;
+      text-align: left;
+      color: #000;
+    }
+    th {
+      background: var(--theme-light);
+      color: #000;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 1.09rem;
+      font-weight: 600;
+    }
+    tbody tr:nth-child(even) {
+      background: #f4f3eb;
+      color: #000;
+    }
+    .total-row td {
+      font-weight: bold;
+      background: var(--theme-light);
+      color: #000;
+      border-top: 2px solid var(--theme);
+      font-size: 1.11rem;
+    }
+    .delete-btn {
+      background: #ffcc80;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 0.98rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .delete-btn:hover {
+      background: #d1a45f;
+      color: #000;
+    }
+    .hide-on-pdf {
+      display: inline-block;
+    }
+    .pdf-mode .hide-on-pdf {
+      display: none !important;
+    }
+    .payment-section {
+      margin-top: 38px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      border-radius: 0;
+      padding: 0;
+      width: fit-content;
+      background: none;
+      border: none;
+      color: #000;
+    }
+    .qr {
+      height: 130px;
+      width: 130px;
+      object-fit: contain;
+      display: block;
+      border: none;
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      margin-bottom: 2px;
+    }
+    .scan-text {
+      font-size: 0.94rem;
+      color: #000;
+      margin-left: 2px;
+      margin-top: 2px;
+      font-style: italic;
+      letter-spacing: 0.1px;
+    }
+    .thankyou {
+      margin-top: 26px;
+      text-align: center;
+      color: #000;
+      font-size: 1.15rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .quote {
+      margin-top: 22px;
+      text-align: center;
+      color: #000;
+      font-size: 1.18rem;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 12px 0 0 0;
+    }
+    .preview-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.32);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .preview-content {
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px 18px 12px 18px;
+      box-shadow: 0 4px 24px rgba(44,62,80,0.18);
+      max-width: 98vw;
+      max-height: 96vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #000;
+    }
+    .preview-content img {
+      max-width: 700px;
+      max-height: 80vh;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      margin-bottom: 10px;
+    }
+    .preview-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      justify-content: center;
+      color: #000;
+    }
+    .preview-actions button {
+      background: var(--theme);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .preview-actions button:hover {
+      background: var(--theme-dark);
+      color: #000;
+    }
+    .preview-actions .close-btn {
+      background: #ffcc80;
+      color: #000;
+    }
+    .preview-actions .close-btn:hover {
+      background: #d1a45f;
+      color: #000;
+    }
+    @media (max-width: 700px) {
+      .invoice-box {
+        padding: 8px;
+      }
+      th, td {
+        font-size: 13px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        text-align: left;
+      }
+      .payment-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .preview-content img {
+        max-width: 98vw;
+      }
+      .header-left img {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box" id="invoice">
+    <div class="invoice-header-bar">INVOICE</div>
+    <div class="header">
+      <div class="header-left">
+        <img src="https://i.ibb.co/B5nTQMz4/your-logo.png" alt="NomadGears Logo" onerror="this.style.display='none'" />
+        <div class="address-block">
+          <span class="rental">CAMPING GEAR RENTALS</span>
+          Tseminyu, Nagaland
+        </div>
+        <div class="pincode">797109</div>
+        <div class="phone">9366113150</div>
+      </div>
+      <div class="header-right">
+        <div class="details-row">
+          <span class="label">Date:</span>
+          <span class="value" id="datetime"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="customer-details hide-on-pdf">
+      <label for="customerName">Customer Name:</label>
+      <input type="text" id="customerName" placeholder="Enter customer name" />
+
+      <label for="customerAddress">Customer Address:</label>
+      <input type="text" id="customerAddress" placeholder="Enter customer address" />
+
+      <label for="customerPhone">Customer Phone:</label>
+      <input type="text" id="customerPhone" placeholder="Enter customer phone" />
+    </div>
+
+    <div class="customer-info-display" id="customerInfo">
+      <div id="displayCustomerName"></div>
+      <div id="displayCustomerAddress"></div>
+      <div id="displayCustomerPhone"></div>
+    </div>
+
+    <div class="actions hide-on-pdf">
+      <select id="defaultItems">
+        <option value="">--Select Item--</option>
+        <option value="2 person tent">2 person tent</option>
+        <option value="3 person tent">3 person tent</option>
+        <option value="Folding Chair">Folding Chair</option>
+        <option value="Folding Stool">Folding Stool</option>
+        <option value="Burner stove">Burner stove</option>
+        <option value="Barbeque grill(small)">Barbeque grill(small)</option>
+        <option value="folding Table(small)">folding Table(small)</option>
+        <option value="Folding Table(Medium)">Folding Table(Medium)</option>
+        <option value="40watt LED outdoor light">40watt LED outdoor light</option>
+        <option value="Tent Indoor Lamp">Tent Indoor Lamp</option>
+        <option value="60L back pack">60L back pack</option>
+      </select>
+      <input type="text" id="itemName" placeholder="Item Name" />
+      <input type="number" id="itemQty" placeholder="No. of Items" min="1" />
+      <input type="number" id="itemPrice" placeholder="Price/Day" min="0" step="0.01" />
+      <input type="number" id="itemDays" placeholder="Days" min="1" style="width:70px;" />
+      <button onclick="addItem()">Add Item</button>
+    </div>
+
+    <table id="itemsTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Item Name</th>
+          <th>Quantity</th>
+          <th>Price/Day</th>
+          <th>Days</th>
+          <th>Total</th>
+          <th class="hide-on-pdf">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Items will be added here -->
+      </tbody>
+      <tfoot>
+        <tr class="total-row">
+          <td colspan="5">Grand Total</td>
+          <td id="grandTotal">₹0.00</td>
+          <td class="hide-on-pdf"></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="payment-section">
+      <img class="qr" src="https://i.ibb.co/kjfgDVL/your-qr.png" alt="QR Code for Payment" onerror="this.style.display='none'" />
+      <div class="scan-text">Please scan to pay</div>
+    </div>
+
+    <div class="quote">"LET THE HILLS BE YOUR THERAPY."</div>
+    <button class="hide-on-pdf" onclick="previewPDF()">Preview Invoice PDF</button>
+    <div class="thankyou">Thank you for choosing NomadGears!</div>
+  </div>
+
+  <div id="previewModal" class="preview-modal" style="display:none;">
+    <div class="preview-content">
+      <img id="previewImg" src="" alt="Invoice Preview" />
+      <div class="preview-actions">
+        <button onclick="downloadPDF()">Download PDF</button>
+        <button onclick="sharePDF()">Share PDF</button>
+        <button class="close-btn" onclick="closePreview()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    const defaultPrices = {
+      "2 person tent": 300,
+      "3 person tent": 350,
+      "Folding Chair": 100,
+      "Folding Stool": 150,
+      "Burner stove": 80,
+      "Barbeque grill(small)": 150,
+      "folding Table(small)": 150,
+      "Folding Table(Medium)": 200,
+      "40watt LED outdoor light": 150,
+      "Tent Indoor Lamp": 50,
+      "60L back pack": 50
+    };
+
+    function setDateTime() {
+      const now = new Date();
+      const options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      };
+      document.getElementById("datetime").textContent = now.toLocaleString("en-IN", options);
+    }
+    setDateTime();
+
+    document.getElementById("defaultItems").addEventListener("change", function () {
+      if (this.value) {
+        document.getElementById("itemName").value = this.value;
+        document.getElementById("itemPrice").value = defaultPrices[this.value] || "";
+      }
+    });
+
+    function updateCustomerInfo() {
+      const name = document.getElementById("customerName").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+
+      document.getElementById("displayCustomerName").textContent = name ? "To: " + name : "";
+      document.getElementById("displayCustomerAddress").textContent = address ? address : "";
+      document.getElementById("displayCustomerPhone").textContent = phone ? phone : "";
+    }
+    document.getElementById("customerName").addEventListener("input", updateCustomerInfo);
+    document.getElementById("customerAddress").addEventListener("input", updateCustomerInfo);
+    document.getElementById("customerPhone").addEventListener("input", updateCustomerInfo);
+    updateCustomerInfo();
+
+    let items = [];
+    function addItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const qty = parseInt(document.getElementById("itemQty").value, 10);
+      const price = parseFloat(document.getElementById("itemPrice").value);
+      const days = parseInt(document.getElementById("itemDays").value, 10);
+      if (!name || isNaN(qty) || qty < 1 || isNaN(price) || price < 0 || isNaN(days) || days < 1) {
+        alert("Please enter valid item details.");
+        return;
+      }
+      items.push({ name, qty, price, days });
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemQty").value = "";
+      document.getElementById("itemPrice").value = "";
+      document.getElementById("itemDays").value = "";
+      document.getElementById("defaultItems").selectedIndex = 0;
+      renderTable();
+    }
+
+    function deleteItem(index) {
+      items.splice(index, 1);
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("itemsTable").querySelector("tbody");
+      tbody.innerHTML = "";
+      let total = 0;
+      items.forEach((item, idx) => {
+        const row = document.createElement("tr");
+        const itemTotal = item.qty * item.price * item.days;
+        row.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${item.name}</td>
+          <td>${item.qty}</td>
+          <td>₹${item.price.toFixed(2)}</td>
+          <td>${item.days}</td>
+          <td>₹${itemTotal.toFixed(2)}</td>
+          <td class="hide-on-pdf"><button class="delete-btn" onclick="deleteItem(${idx})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+        total += itemTotal;
+      });
+      document.getElementById("grandTotal").textContent = "₹" + total.toFixed(2);
+    }
+
+    let lastPdfBlob = null;
+    function previewPDF() {
+      setDateTime();
+      updateCustomerInfo();
+      document.body.classList.add("pdf-mode");
+      const invoice = document.getElementById("invoice");
+      html2canvas(invoice, { scale: 3, useCORS: true }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new window.jspdf.jsPDF("p", "pt", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const imgProps = pdf.getImageProperties(imgData);
+        const ratio = Math.min(pdfWidth / imgProps.width, pdfHeight / imgProps.height);
+        const imgW = imgProps.width * ratio;
+        const imgH = imgProps.height * ratio;
+        pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
+        lastPdfBlob = pdf.output("blob");
+        document.getElementById("previewImg").src = imgData;
+        document.getElementById("previewModal").style.display = "flex";
+        document.body.classList.remove("pdf-mode");
+      });
+    }
+    function closePreview() {
+      document.getElementById("previewModal").style.display = "none";
+    }
+    function downloadPDF() {
+      if (lastPdfBlob) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(lastPdfBlob);
+        a.download = "NomadGears_Invoice.pdf";
+        a.click();
+      }
+    }
+    async function sharePDF() {
+      if (!lastPdfBlob) return;
+      if (navigator.canShare && navigator.canShare({ files: [new File([""], "dummy.pdf", {type: "application/pdf"})] })) {
+        const file = new File([lastPdfBlob], "NomadGears_Invoice.pdf", { type: "application/pdf" });
+        try {
+          await navigator.share({
+            files: [file],
+            title: "NomadGears Invoice",
+            text: "Here is your invoice from NomadGears."
+          });
+        } catch (e) {
+          alert("Sharing cancelled or failed.");
+        }
+      } else {
+        alert("Sharing PDF is not supported on this device/browser. Please download and share manually.");
+      }
+    }
+    renderTable();
+  </script>
+</body>
+</html>
