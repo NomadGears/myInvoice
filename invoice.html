@@ -25,9 +25,9 @@
       background: #fff;
       padding: 3vw 2vw 2vw 2vw;
       border-radius: 16px;
+      box-sizing: border-box;
       box-shadow: 0 6px 32px rgba(214, 213, 196, 0.6);
       color: #000;
-      box-sizing: border-box;
     }
     .invoice-header-bar {
       background: var(--theme);
@@ -110,16 +110,17 @@
     }
     .details-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       margin-bottom: 10px;
       color: #000;
+      gap: 8px;
     }
     .details-row .label {
       color: #000;
       font-size: 1rem;
       font-weight: 500;
-      margin-right: 8px;
+      margin-right: 4px;
     }
     .details-row .value {
       font-weight: 500;
@@ -405,7 +406,7 @@
     <div class="invoice-header-bar">INVOICE</div>
     <div class="header">
       <div class="header-left">
-        <img src="https://i.ibb.co/B5nTQMz4/your-logo.png" alt="NomadGears Logo" onerror="this.style.display='none'" />
+        <img src="https://nomadgears.github.io/myInvoice/logo.png" alt="NomadGears Logo" onerror="this.style.display='none'" />
         <div class="address-block">
           <span class="rental">CAMPING GEAR RENTALS</span>
           Tseminyu, Nagaland
@@ -454,9 +455,9 @@
         <option value="60L back pack">60L back pack</option>
       </select>
       <input type="text" id="itemName" placeholder="Item Name" />
-      <input type="number" id="itemQty" placeholder="No. of Items" min="1" />
+      <input type="number" id="itemQty" placeholder="No. of Items" min="1" value="1" />
       <input type="number" id="itemPrice" placeholder="Price/Day" min="0" step="0.01" />
-      <input type="number" id="itemDays" placeholder="Days" min="1" style="width:70px;" />
+      <input type="number" id="itemDays" placeholder="Days" min="1" value="1" style="width:70px;" />
       <button onclick="addItem()">Add Item</button>
     </div>
 
@@ -485,7 +486,7 @@
     </table>
 
     <div class="payment-section">
-      <img class="qr" src="https://i.ibb.co/kjfgDVL/your-qr.png" alt="QR Code for Payment" onerror="this.style.display='none'" />
+      <img class="qr" src="https://nomadgears.github.io/myInvoice/Qr.png" alt="QR Code for Payment" onerror="this.style.display='none'" />
       <div class="scan-text">Please scan to pay</div>
     </div>
 
@@ -569,9 +570,9 @@
       }
       items.push({ name, qty, price, days });
       document.getElementById("itemName").value = "";
-      document.getElementById("itemQty").value = "";
+      document.getElementById("itemQty").value = 1;
       document.getElementById("itemPrice").value = "";
-      document.getElementById("itemDays").value = "";
+      document.getElementById("itemDays").value = 1;
       document.getElementById("defaultItems").selectedIndex = 0;
       renderTable();
     }
@@ -609,13 +610,10 @@
       updateCustomerInfo();
       document.body.classList.add("pdf-mode");
       const invoice = document.getElementById("invoice");
-
-      // Get the actual rendered width and height
       const rect = invoice.getBoundingClientRect();
       const width = Math.round(rect.width);
       const height = Math.round(rect.height);
 
-      // Use html2canvas with scale 2 for sharpness and responsive sizing
       const canvas = await html2canvas(invoice, {
         scale: 2,
         width: width,
@@ -623,7 +621,6 @@
         useCORS: true
       });
 
-      // Use jsPDF with px units and px_scaling hotfix for 1:1 sizing
       const pdf = new window.jspdf.jsPDF({
         orientation: height > width ? 'p' : 'l',
         unit: 'px',
@@ -631,7 +628,6 @@
         hotfixes: ['px_scaling']
       });
 
-      // Use JPEG for best size/quality balance
       const imgData = canvas.toDataURL('image/jpeg', 0.85);
       pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
 
